@@ -25,6 +25,7 @@ import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.theminequest.MineQuest.API.Managers;
@@ -59,6 +60,19 @@ public class Main extends JavaPlugin implements Listener {
 			properties.getString(w.getName(), "/");
 		}
 		getServer().getPluginManager().registerEvents(this, this);
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e){
+		String questName = properties.getString(e.getPlayer().getWorld().getName(), "/");
+		if (questName.equals("/"))
+			return;
+		Quest q = Managers.getQuestManager().getMainWorldQuest(e.getPlayer().getName(), questName);
+		if (q==null){
+			QuestDetails d = Managers.getQuestManager().getDetails(questName);
+			if (d!=null)
+				Managers.getQuestManager().startQuest(d,e.getPlayer().getName());
+		}
 	}
 	
 	@EventHandler
