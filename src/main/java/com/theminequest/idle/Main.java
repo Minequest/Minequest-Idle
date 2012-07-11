@@ -71,7 +71,7 @@ public class Main extends JavaPlugin implements Listener {
 		if (q==null){
 			QuestDetails d = Managers.getQuestManager().getDetails(questName);
 			if (d!=null)
-				Managers.getQuestManager().startQuest(d,e.getPlayer().getName());
+				Managers.getQuestManager().startQuest(d,e.getPlayer().getName()).startQuest();
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class Main extends JavaPlugin implements Listener {
 		if (q==null){
 			QuestDetails d = Managers.getQuestManager().getDetails(questName);
 			if (d!=null)
-				Managers.getQuestManager().startQuest(d,e.getPlayer().getName());
+				Managers.getQuestManager().startQuest(d,e.getPlayer().getName()).startQuest();
 		}
 	}
 	
