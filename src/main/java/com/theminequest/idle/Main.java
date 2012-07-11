@@ -58,6 +58,7 @@ public class Main extends JavaPlugin implements Listener {
 		for (World w : Bukkit.getWorlds()){
 			properties.getString(w.getName(), "/");
 		}
+		getServer().getPluginManager().registerEvents(this, this);
 	}
 	
 	@EventHandler
