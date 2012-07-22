@@ -64,6 +64,8 @@ public class Main extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
+		if (e.getPlayer().getWorld().getName().startsWith("mqinstance_"))
+			return;
 		String questName = properties.getString(e.getPlayer().getWorld().getName(), "/");
 		if (questName.equals("/"))
 			return;
@@ -77,6 +79,8 @@ public class Main extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent e){
+		if (e.getPlayer().getWorld().getName().startsWith("mqinstance_"))
+			return;
 		String questName = properties.getString(e.getPlayer().getWorld().getName(), "/");
 		if (questName.equals("/"))
 			return;
