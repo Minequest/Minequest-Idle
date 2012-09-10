@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
@@ -81,6 +82,12 @@ public class Main extends JavaPlugin implements Listener {
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent e){
 		if (e.getPlayer().getWorld().getName().startsWith("mqinstance_"))
 			return;
+		String stopquest = properties.getString(e.getFrom().getName(),"/");
+		if (!stopquest.equals("/")) {
+			Quest q = Managers.getQuestManager().getMainWorldQuest(e.getPlayer().getName(), stopquest);
+			if (q != null)
+				q.finishQuest(CompleteStatus.CANCELED);
+		}
 		String questName = properties.getString(e.getPlayer().getWorld().getName(), "/");
 		if (questName.equals("/"))
 			return;
