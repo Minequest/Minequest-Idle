@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.theminequest.MineQuest.API.CompleteStatus;
 import com.theminequest.MineQuest.API.Managers;
 import com.theminequest.MineQuest.API.Quest.Quest;
 import com.theminequest.MineQuest.API.Quest.QuestDetails;
@@ -42,7 +43,7 @@ public class Main extends JavaPlugin implements Listener {
 	
 	public static final String PROPERTIES_NAME = "idle.properties";
 	private PropertiesFile properties;
-	private LinkedHashMap<String,List<Quest>> quests;
+	private LinkedHashMap<String,Quest> quests;
 	
 	@Override
 	public void onDisable() {
@@ -65,7 +66,7 @@ public class Main extends JavaPlugin implements Listener {
 		for (World w : Bukkit.getWorlds()){
 			properties.getString(w.getName(), "/");
 		}
-		quests = new LinkedHashMap<String, List<Quest>>();
+		quests = new LinkedHashMap<String, Quest>();
 		getServer().getPluginManager().registerEvents(this, this);
 	}
 	
@@ -84,12 +85,6 @@ public class Main extends JavaPlugin implements Listener {
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent e){
 		if (e.getPlayer().getWorld().getName().startsWith("mqinstance_"))
 			return;
-//		String stopquest = properties.getString(e.getFrom().getName(),"/");
-//		if (!stopquest.equals("/")) {
-//			Quest q = Managers.getQuestManager().getMainWorldQuest(e.getPlayer().getName(), stopquest);
-//			if (q != null)
-//				q.finishQuest(CompleteStatus.CANCELED);
-//		}
 		String questName = properties.getString(e.getPlayer().getWorld().getName(), "/");
 		if (questName.equals("/"))
 			return;
@@ -98,8 +93,8 @@ public class Main extends JavaPlugin implements Listener {
 	}
 	
 	private void tryStart(String playerName, String questName) {
-		if (!quests.containsKey(playerName))
-			quests.put(playerName,new ArrayList<Quest>());
+		if (quests.containsKey(playerName))
+			quests.remove(playerName).finishQuest(CompleteStatus.CANCELED);
 		
 		if (!hasQuest(playerName,questName)) {
 			QuestDetails d = Managers.getQuestManager().getDetails(questName);
@@ -108,7 +103,7 @@ public class Main extends JavaPlugin implements Listener {
 					Method m = com.theminequest.MineQuest.Quest.Quest.class.getMethod("newInstance", long.class, QuestDetails.class, String.class);
 					m.setAccessible(true);
 					Quest q = (Quest) m.invoke(null, -1,d,playerName);
-					quests.get(playerName).add(q);
+					quests.put(playerName, q);
 					q.startQuest();
 				} catch (Exception ex) {
 					Managers.log(Level.SEVERE, "[Idle] Could not start Idle Background Quest!");
@@ -119,11 +114,7 @@ public class Main extends JavaPlugin implements Listener {
 	}
 	
 	private boolean hasQuest(String playerName, String questName) {
-		for (Quest q : quests.get(playerName)) {
-			if (q.getDetails().getProperty(QuestDetails.QUEST_NAME).equals(questName))
-				return true;
-		}
-		return false;
+		return (quests.get(playerName).getDetails().getProperty(QuestDetails.QUEST_NAME).equals(questName));
 	}
 	
 }
