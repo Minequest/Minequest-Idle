@@ -110,6 +110,13 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.theminequest</groupId>
+			<artifactId>MineQuest</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
